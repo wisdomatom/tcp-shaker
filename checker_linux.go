@@ -146,7 +146,7 @@ func (c *Checker) CheckAddrZeroLinger(addr string, timeout time.Duration, zeroLi
 		return err
 	}
 	// Create socket with options set
-	fd, err := createSocketZeroLinger(family, zeroLinger)
+	fd, err := createSocketZeroLinger(family, "", zeroLinger)
 	if err != nil {
 		return err
 	}
@@ -167,12 +167,12 @@ func (c *Checker) CheckAddrZeroLinger(addr string, timeout time.Duration, zeroLi
 
 // CheckAddrWithLatency is the supplement of CheckAddr which return the handshake time duration.
 // NOTE: the returned time duration only meaningful when return err is nil.
-func (c *Checker) CheckAddrWithLatency(addr string, timeout time.Duration) (time.Duration, error) {
-	return c.CheckAddrZeroLingerWithLatency(addr, timeout, c.zeroLinger)
+func (c *Checker) CheckAddrWithLatency(addr string, sourceAddr string, timeout time.Duration) (time.Duration, error) {
+	return c.CheckAddrZeroLingerWithLatency(addr, sourceAddr, timeout, c.zeroLinger)
 }
 
 // CheckAddrZeroLingerWithLatency is CheckAddrWithLatency with a zeroLinger parameter.
-func (c *Checker) CheckAddrZeroLingerWithLatency(addr string, timeout time.Duration, zeroLinger bool) (time.Duration, error) {
+func (c *Checker) CheckAddrZeroLingerWithLatency(addr string, sourceAddr string, timeout time.Duration, zeroLinger bool) (time.Duration, error) {
 	// Set deadline
 	deadline := time.Now().Add(timeout)
 
@@ -182,7 +182,7 @@ func (c *Checker) CheckAddrZeroLingerWithLatency(addr string, timeout time.Durat
 		return 0, err
 	}
 	// Create socket with options set
-	fd, err := createSocketZeroLinger(family, zeroLinger)
+	fd, err := createSocketZeroLinger(family, sourceAddr, zeroLinger)
 	if err != nil {
 		return 0, err
 	}
